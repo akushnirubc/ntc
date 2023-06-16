@@ -1,0 +1,16 @@
+---
+- name: NAPALM GET FACTS
+  hosts: csr1
+  connection: ansible.netcommon.network_cli
+  gather_facts: false
+
+  tasks:
+    - name: NAMPALM GET FACTS
+      napalm.napalm.get_facts:
+        # filter: facts
+        # filter: interfaces
+        filter: lldp_neighbors
+      register: result
+    - name: PRINT NAPALM FACTS
+      ansible.builtin.debug:
+        var: result

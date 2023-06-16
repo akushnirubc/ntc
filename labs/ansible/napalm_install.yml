@@ -1,0 +1,22 @@
+---
+- name: CONFIGURE LOOPBACK INTERFACES WITH NAPALM_INSTALL_CONFIG
+  hosts: csr1
+  connection: ansible.netcommon.network_cli
+  gather_facts: false
+
+  tasks:
+
+    - name: CREATE DIFF SUBDIRECTORY
+      ansible.builtin.file:
+        path: '../compiled/{{ inventory_hostname }}'
+        state: directory
+
+    - name: CREATE LOOPBACK CONFIGS FROM FILE USING NAPALM
+      napalm.napalm.napalm_install_config:
+        config_file: 'loopbacks.txt'
+        commit_changes: true
+        replace_config: false
+        get_diffs: true
+        diff_file: '../compiled/{{ inventory_hostname }}/diff'
+        optional_args:
+          inline_transfer: True

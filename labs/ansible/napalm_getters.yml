@@ -1,0 +1,33 @@
+---
+
+# Details are in https://galaxy.ansible.com/napalm/napalm
+# pip install napalm
+# ansible-galaxy collection install napalm.napalm
+
+- name: NAPALM GETTERS
+  hosts: ios, eos, vmx
+  connection: ansible.netcommon.network_cli
+  gather_facts: false
+
+  tasks:
+
+    - name: GET FACTS FROM DEVICE VIA NAPALM_GET_FACTS MODULE
+      napalm.napalm.napalm_get_facts:
+        hostname: "{{ inventory_hostname }}"
+        username: "{{ ansible_user }}"
+        dev_os: "{{ ansible_network_os }}"
+        password: "{{ ansible_ssh_pass }}"
+        filter: 'facts,interfaces'
+      register: result
+
+     # - name: PRINT ALL DATA
+     #   ansible.builtin.debug:
+     #     var: result
+
+    - name: PRINT VENDOR NAME#
+      ansible.builtin.debug:
+        var: napalm_vendor
+
+    - name: PRINT DEVICE VERSION
+      ansible.builtin.debug:
+        var: napalm_os_version

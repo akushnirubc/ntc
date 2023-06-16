@@ -1,0 +1,7 @@
+---
+- name: ENSURE SNMP COMMUNITIES EXIST IN IOS
+  cisco.ios.ios_config:
+    commands:
+      - "snmp-server community {{ item.community }}  {{ item.group }}"
+  loop: "{{ snmp_communities }}"
+    

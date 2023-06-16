@@ -1,0 +1,55 @@
+---
+
+- name: NAPALM CLI
+  hosts: csr2, eos-spine2
+  connection: ansible.netcommon.network_cli
+  gather_facts: false
+
+  tasks:
+
+    - name: PRINT OUT NTC_VENDOR
+      ansible.builtin.debug:
+        var: ansible_network_os
+
+    - name: MANUAL CLI TO SHOW IP ROUTE WITH IOS
+      cisco.ios.ios_command:
+        commands:
+          - show ip route
+      when:
+        - "ansible_network_os == 'ios'"
+      register: ios_cli_output
+
+    - name: PRINT IOS_CLI_OUTPUT
+      ansible.builtin.debug:
+        var: ios_cli_output
+      when:
+        - "ansible_network_os == 'ios'"
+
+    - name: MANUAL CLI TO SHOW IP ROUTE WITH EOS
+      arista.eos.eos_command:
+        commands:
+          - show ip route
+      when:
+        - "ansible_network_os == 'eos'"
+      register: eos_cli_output
+
+    - name: PRINT eos_CLI_OUTPUT
+      ansible.builtin.debug:
+        var: eos_cli_output
+      when:
+        - "ansible_network_os == 'eos'"
+    
+    - name: MANUAL CLI TO SHOW IP ROUTE VIA NAPALM
+      napalm.napalm.napalm_cli:
+        hostname: "{{ inventory_hostname }}"
+        username: "{{ ansible_user }}"
+        password: "{{ ansible_ssh_pass }}"
+        dev_os: "{{ ansible_network_os }}"
+        args:
+          commands:
+            - show ip route
+      register: napalm_cli_output
+
+    - name: PRINT NAPALM_CLI_OUTPUT
+      ansible.builtin.debug:
+        var: napalm_cli_output

@@ -1,0 +1,24 @@
+---
+
+- name: NAPALM CLI
+  hosts: csr1
+  connection: ansible.netcommon.network_cli
+  gather_facts: false
+
+  tasks:
+
+    - name: MANUAL CLI TO SHOW VERSION AND SHOW SNMP CHASSIS
+      napalm.napalm.napalm_cli:
+        hostname: "{{ inventory_hostname }}"
+        username: "{{ ansible_user }}"
+        password: "{{ ansible_ssh_pass }}"
+        dev_os: "{{ ansible_network_os }}"
+        args:
+          commands:
+            - show interface Loopback 100
+            - show interface Loopback 200
+      register: napalm_cli_output
+
+    - name: PRINT NAPALM_CLI_OUTPUT
+      ansible.builtin.debug:
+        var: napalm_cli_output
