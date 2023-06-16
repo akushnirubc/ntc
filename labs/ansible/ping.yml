@@ -1,0 +1,42 @@
+---
+
+- name: TEST REACHABILITY
+  hosts: ios
+  connection: ansible.netcommon.network_cli
+  gather_facts: false
+
+  vars:
+    target_ips:
+      - "10.0.0.15"
+      - "10.0.0.2"
+      - "192.168.1.4"
+
+  tasks:
+    
+    - name: ENSURE PING-RESPONSES DIRECTORY FOR RESULTS EXISTS
+      ansible.builtin.file:
+        path: ./ping-results
+        state: directory
+
+    - name: SEND CISCO IOS PING COMMAND TO DEVICES
+      cisco.ios.ios_command:
+        commands: "ping {{ item }} repeat 2"
+      register: ping_responses
+      loop: "{{ target_ips }}"
+
+    - name: TEST REGISTERED OUTPUT
+      ansible.builtin.debug:
+        var: ping_responses
+
+    - name: TEST LOOPING OVER REGISTERED VALUE
+      ansible.builtin.debug:
+        var: "{{ item }}"
+      loop: "{{ ping_responses['results']}}"
+
+    - name: GENERATE CONFIGURATION FILES
+      ansible.builtin.template:
+        src:  "basic-copy-single.j2"
+        dest: "./ping-results/{{ inventory_hostname }}"
+
+
+      

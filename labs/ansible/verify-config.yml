@@ -1,0 +1,28 @@
+---
+
+- name: USING DIFF AGAINST WITH CONFIG
+  hosts: csr1
+  connection: ansible.netcommon.network_cli
+  gather_facts: false
+
+  tasks:
+    
+    - name: ENSURE THAT LOOPBACK222 IS CONFIGURED
+      cisco.ios.ios_config:
+        parents:
+          - interface Loopback222
+        commands:
+          - ip address 10.224.222.222 255.255.255.255
+        diff_against: running
+      tags: diff_me
+
+    - name: CREATE BACKUP FILE VARIABLE
+      ansible.builtin.set_fact:
+        backup_file: "{{ query('fileglob', 'backup/{{ inventory_hostname }}_config.*') | sort | last }}"
+      tags: verify_config
+
+    - name: VERIFY GOLDEN CONFIGURATION
+      cisco.ios.ios_config:
+        diff_against: intended
+        intended_config: "{{ lookup('file', '{{ backup_file }}') }}"
+      tags: verify_config

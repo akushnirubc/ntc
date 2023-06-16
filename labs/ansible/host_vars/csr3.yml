@@ -1,0 +1,8 @@
+snmp_config:
+  ro:
+    - ntc-public
+  rw:
+    - private
+    - ntc-private
+  contact: netdevops_tiger_team
+  location: NYC

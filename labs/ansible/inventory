@@ -1,0 +1,65 @@
+[all:vars]
+ansible_user=ntc
+ansible_ssh_pass=ntc123
+ntc_device_type=unknown
+
+[eos:children]
+eos_spines
+eos_leaves
+
+[eos_spines]
+eos-spine1
+eos-spine2
+
+[eos_leaves]
+eos-leaf1
+eos-leaf2
+
+[eos:vars]
+ansible_network_os=eos
+ntc_api=eapi
+ntc_vendor=arista
+
+[ios]
+csr1  #ntc_device_type=csr1000v-ng
+csr2  #ansible_host=10.1.1.1
+csr3
+#csr1 #ansible_network_os=ios
+# csr2 #ansible_network_os=ios
+# csr3 #ansible_network_os=ios
+
+[ios:vars]
+ansible_network_os=ios
+ntc_api=ssh
+ntc_vendor=cisco
+ntc_device_type=csr100v
+
+[nxos:children]
+nxos_spines
+
+[nxos_spines]
+nxos-spine1  ntc_device_type=n9k
+nxos-spine2
+
+[nxos:vars]
+ansible_network_os=nxos
+ntc_api=nxapi
+ntc_vendor=cisco
+ntc_device_type=n9kv
+
+[vmx]
+vmx[1:3]
+#vmx1 ansible_network_os=junos
+# vmx2 ansible_network_os=junos
+# vmx3 ansible_network_os=junos
+
+[vmx:vars]
+ansible_network_os=junos
+ntc_api=netconf
+ntc_vendor=juniper
+
+[AMER:children]
+ios
+
+[EMEA:children]
+vmx

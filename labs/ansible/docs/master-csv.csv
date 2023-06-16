@@ -1,0 +1,13 @@
+Hostname,Vendor,Model,OS Version,Serial Number
+csr1,cisco,CSR1000V,17.01.01,9SAGBHTUEE9
+csr2,cisco,CSR1000V,17.01.01,9SAGBHTUEE9
+csr3,cisco,CSR1000V,17.01.01,9SAGBHTUEE9
+eos-leaf1,arista,vEOS,4.22.4M,UNKNOWN
+eos-leaf2,arista,vEOS,4.22.4M,UNKNOWN
+eos-spine1,arista,vEOS,4.22.4M,UNKNOWN
+eos-spine2,arista,vEOS,4.22.4M,UNKNOWN
+nxos-spine1,cisco,Nexus9000 C9300v Chassis,9.3(3),9858AEXU1AT
+nxos-spine2,cisco,Nexus9000 C9300v Chassis,9.3(3),9858AEXU1AT
+vmx1,juniper,vmx,18.2R1.9,VM6486105737
+vmx2,juniper,vmx,18.2R1.9,VM6486105737
+vmx3,juniper,vmx,18.2R1.9,VM6486105643

@@ -1,0 +1,85 @@
+---
+
+- name: PLAY 1 - DEPLOYING SNMP CONFIGURATION ON IOS
+  hosts: ios
+  connection: ansible.netcommon.network_cli
+  gather_facts: false
+
+  tasks:
+    
+    - name: TASK 1 in PLAY 1 - ENSURE SNMP COMMANDS EXIST ON IOS DEVICES
+      ansible.netcommon.cli_config:
+        config: |
+          snmp-server community ntc-team RO
+          snmp-server location FL_HQ
+          snmp-server contact JAMES_CHARLES
+
+- name: PLAY 2 - DEPLOYING SNMP CONFIGURATION ON JUNOS
+  hosts: vmx
+  connection: ansible.netcommon.network_cli
+  gather_facts: false
+
+  tasks:
+
+    - name: TASK 1 in PLAY 2 - ENSURE SNMP COMMANDS EXIST ON JUNOS DEVICES
+      ansible.netcommon.cli_config:
+        config: |
+          set snmp location FL_HQ
+          set snmp contact JAMES_CHARLES
+          set snmp community public authorization read-only
+
+- name: PLAY 3 - DEPLOYING SNMP CONFIGURATIONS ON IOS USING A VARIABLE
+  hosts: ios
+  connection: ansible.netcommon.network_cli
+  gather_facts: false
+
+  vars:
+    ios_commands: |
+          snmp-server community ntc-team RO
+          snmp-server location FL_HQ
+          snmp-server contact JAMES_CHARLES
+
+  tasks: 
+
+    - name: TASK 1 in PLAY 3 - ENSURE SNMP COMMANDS EXIST ON IOS DEVICES
+      ansible.netcommon.cli_config:
+        config: "{{ ios_commands }}"
+
+- name: PLAY 4 - DEPLOYING SNMP CONFIGURATIONS ON JUNOS USING A VARIABLE
+  hosts: vmx
+  connection: ansible.netcommon.network_cli
+  gather_facts: false
+
+  vars:
+    junos_commands: |
+          set snmp location FL_HQ
+          set snmp contact JAMES_CHARLES
+          set snmp community public authorization read-only
+
+  tasks:
+
+    - name: TASK 1 in PLAY 4 - ENSURE SNMP COMMANDS EXIST ON VMX DEVICES
+      ansible.netcommon.cli_config:
+        config: "{{ junos_commands }}"
+
+- name: PLAY 5 - DEPLOYING SNMP CONFIGURATIONS ON IOS AND JUNOS
+  hosts: ios,vmx
+  connection: ansible.netcommon.network_cli
+  gather_facts: false
+
+  vars:
+    vendor_commands:
+      ios: |
+        snmp-server community ntc-team RO
+        snmp-server location FL_HQ
+        snmp-server contact JAMES_CHARLES
+      junos: |
+          set snmp location FL_HQ
+          set snmp contact JAMES_CHARLES
+          set snmp community public authorization read-only
+
+  tasks:
+
+      - name: TASK 1 in PLAY 5 - ENSURE SNMP COMMANDS EXIST ON IOS AND VMX DEVICES
+        ansible.netcommon.cli_config:
+          config: "{{ vendor_commands[ansible_network_os] }}"

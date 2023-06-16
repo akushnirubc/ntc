@@ -1,0 +1,23 @@
+---
+
+- name: PLAY 1 - DEPLOYING SNMP CONFIGURATIONS ON IOS
+  hosts: ios
+  connection: ansible.netcommon.network_cli
+  gather_facts: false
+
+  tasks:
+
+    - name: TASK 1 in PLAY 1 - ENSURE SNMP COMMANDS EXIST ON IOS DEVICES
+      cisco.ios.ios_config:
+        src: ./configs/ios-snmp.cfg
+
+- name: PLAY 2 - DEPLOYING SNMP CONFIGURATIONS ON JUNOS
+  hosts: vmx
+  connection: ansible.netcommon.netconf
+  gather_facts: false
+
+  tasks:
+
+    - name: TASK 1 in PLAY 2 - ENSURE SNMP COMMANDS EXIST ON JUNOS DEVICES
+      junipernetworks.junos.junos_config:
+        src: ./configs/junos-snmp.cfg

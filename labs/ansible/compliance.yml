@@ -1,0 +1,65 @@
+---
+
+- name: IOS COMPLIANCE
+  hosts: ios
+  connection: ansible.netcommon.network_cli
+  gather_facts: false
+
+  tasks:
+    
+    - name: IOS SHOW VERSION
+      cisco.ios.ios_command:
+        commands:
+          - show version
+      register: output
+
+    - name: CHECK OS AND CONFIG REGISTER
+      ansible.builtin.assert:
+        that:
+          - "'17.01.01' in output['stdout'][0]"
+          - "'0x2102' in output['stdout'][0]"
+
+- name: JUNOS COMPLIANCE
+  hosts: vmx
+  connection: ansible.netcommon.netconf
+  gather_facts: false
+
+  tasks:
+
+    - name: JUNOS SHOW VERSION
+      junipernetworks.junos.junos_command:
+        commands:
+          - show system storage
+        display: json
+      register: output
+
+    - name: VIEW JSON DATA
+      ansible.builtin.debug:
+        var: output
+
+    - name: CREATE NEW VARIABLES
+      ansible.builtin.set_fact:
+        #percent: "{{ output['stdout'][0]['system-storage-information'][0]['filesystem'][0]['used-percent'][0]['data'] }}"
+        percent: 60
+        filesystem: "{{ output['stdout'][0]['system-storage-information'][0]['filesystem'][0]['filesystem-name'][0]['data'] }}"
+        blocks: "{{ output['stdout'][0]['system-storage-information'][0]['filesystem'][0]['available-blocks'][0]['data'] }}"
+        storage: "{{ output['stdout'][0]['system-storage-information'][0]['filesystem'][0]['available-blocks'][0]['attributes']['junos:format'] }}"
+
+    - name: VIEW DATA STORED IN NEW VARIABLES
+      ansible.builtin.debug:
+        msg: "Percent: {{ percent }}%,  filesystem: {{ filesystem }}, Blocks: {{ blocks }}, Storage: {{ storage }}"
+    
+    - name: CHECK STORAGE FILESYSTEM PERCENT
+      ansible.builtin.assert:
+        that:
+          - "percent | int  <= 50"
+        fail_msg: "Warning!! filesystem {{ filesystem }} is at {{ percent }}%"
+        success_msg: "Current filesystem  {{ filesystem }} is at {{ percent }}%"
+      ignore_errors: true
+
+    - name: CHECK STORAGE FILESYSTEM AVAILABILITY
+      ansible.builtin.assert:
+        that:
+          - "blocks | int >= 4194304"
+        fail_msg: "Warning!! filesystem {{ filesystem }} is at {{ storage }}"
+        success_msg: "Current filesystem  {{ filesystem }} is at {{ storage }}"

@@ -1,0 +1,93 @@
+---
+
+- name: GATHER IOS FACTS
+  hosts: ios
+  connection: ansible.netcommon.network_cli
+  gather_facts: false
+  tags: ios
+
+  tasks:
+    - name: GET FACTS
+      cisco.ios.ios_facts:
+      register: ntc_ios_facts
+
+    - name: DEBUG FACTS
+      ansible.builtin.debug:
+        var: ntc_ios_facts
+
+    - name: DEBUG OS VERSION
+      ansible.builtin.debug:
+        var: ntc_ios_facts['ansible_facts']['ansible_net_version']
+
+    - name: DEBUG SHORTHAND OS VERSION
+      ansible.builtin.debug:
+        var: ansible_net_version
+
+- name: GATHER NXOS FACTS
+  hosts: nxos
+  connection: ansible.netcommon.network_cli
+  gather_facts: false
+  tags: nxos
+
+  tasks:
+    - name: GET NXOS FACTS
+      cisco.nxos.nxos_facts:
+      register: ntc_nxos_facts
+
+    - name: DEBUG FACTS
+      ansible.builtin.debug:
+        var: ntc_nxos_facts
+
+    - name: DEBUG OS VERSION
+      ansible.builtin.debug:
+        var: ntc_nxos_facts['ansible_facts']['ansible_net_version']
+
+    - name: DEBUG SHORTHAND OS VERSION
+      ansible.builtin.debug:
+        var: ansible_net_version
+
+- name: GATHER EOS FACTS
+  hosts: eos
+  connection: ansible.netcommon.network_cli
+  gather_facts: false
+  tags: eos
+
+  tasks:
+    - name: GET EOS FACTS
+      arista.eos.eos_facts:
+      register: ntc_eos_facts
+
+    - name: DEBUG FACTS
+      ansible.builtin.debug:
+        var: ntc_eos_facts
+
+    - name: DEBUG OS VERSION
+      ansible.builtin.debug:
+        var: ntc_eos_facts['ansible_facts']['ansible_net_version']
+
+    - name: DEBUG SHORTHAND OS VERSION
+      ansible.builtin.debug:
+        var: ansible_net_version
+
+- name: GATHER JUNOS FACTS
+  hosts: vmx
+  connection: ansible.netcommon.netconf
+  gather_facts: false
+  tags: junos
+
+  tasks:
+    - name: GET FACTS
+      junipernetworks.junos.junos_facts:
+      register: ntc_junos_facts
+
+    - name: DEBUG FACTS
+      ansible.builtin.debug:
+        var: ntc_junos_facts
+
+    - name: DEBUG OS VERSION
+      ansible.builtin.debug:
+        var: ntc_junos_facts['ansible_facts']['ansible_net_version']
+
+    - name: DEBUG SHORTHAND OS VERSION
+      ansible.builtin.debug:
+        var: ansible_net_version

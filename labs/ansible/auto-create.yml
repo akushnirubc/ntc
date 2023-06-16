@@ -1,0 +1,16 @@
+---
+- name: AUTO GENERATE FILES AND DIRECTORIES
+  hosts: all
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: CREATE DIRECTORIES BASED ON OS
+      ansible.builtin.file:
+        path: ./tmp/{{ ansible_network_os }}/
+        state: directory
+
+    - name: CREATE SNMP.CONF FILE
+      ansible.builtin.file:
+        path: ./tmp/{{ ansible_network_os }}/{{ inventory_hostname }}-snmp.conf
+        state: touch
